@@ -16,3 +16,4 @@ MANIFEST
 .coverage
 coverage.xml
 utest/resources/fake.cfg
+.venv
