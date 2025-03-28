@@ -40,6 +40,7 @@ TEST_SETUP = 'Test Setup'
 TEST_TEAR = 'Test Teardown'
 RET_VAL = 'Return Value'
 TEST_TEMPL = 'Test Template'
+DOCUMENTATION = 'Documentation'
 
 def editor_dialog(obj, lang='en'):
     set_lang = lang if lang and len(lang) > 0 else 'en'
@@ -130,7 +131,7 @@ class ScalarVariableDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('Scalar Variable')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '${}'
@@ -150,7 +151,7 @@ class ListVariableDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('List Variable')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '@{}'
@@ -170,7 +171,7 @@ class DictionaryVariableDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('Dictionary Variable')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '&{}'
@@ -195,7 +196,7 @@ class LibraryDialog(_Dialog):
         else:
             self._title = _('Library')
         self._title_nt = title_nt
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, item):
         name = item and item.name or ''
@@ -242,7 +243,7 @@ class ResourceDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('Resource')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, item):
         name = item and item.name or ''
@@ -255,12 +256,12 @@ class ResourceDialog(_Dialog):
 
 
 class DocumentationDialog(_Dialog):
-    _title_nt = 'Documentation'
+    _title_nt = DOCUMENTATION
 
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
-        self._title = _('Documentation')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        self._title = _(DOCUMENTATION)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, doc):
         return [MultiLineEditor(self, doc)]
@@ -270,10 +271,10 @@ class DocumentationDialog(_Dialog):
         pass
 
     def get_value(self):
-        return _Dialog.get_value(self)
+        return super().get_value(self)
 
     def get_comment(self):
-        return ''
+        return self._comment_editor.get_value()
 
     def _execute(self):
         """ Just ignore it """
@@ -290,7 +291,7 @@ class _SettingDialog(_Dialog):
         else:
             self._title = ''
         self._title_nt = title_nt
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, item):
         editor = ValueEditor(self, item.value)
@@ -309,7 +310,7 @@ class ForceTagsDialog(_SettingDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=FORCE_TAGS):
         __ = title
         self._title = _(FORCE_TAGS)
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -322,7 +323,7 @@ class DefaultTagsDialog(_SettingDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=DEFAULT_TAGS):
         __ = title
         self._title = _(DEFAULT_TAGS)
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -335,12 +336,14 @@ class TestTagsDialog(_SettingDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_TAGS):
         __ = title
         self._title = _(TEST_TAGS)
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
         pass
 
+    def get_comment(self):
+        return self._comment_editor.get_value()
 
 class TagsDialog(_SettingDialog):
     _title_nt = 'Tags'
@@ -348,7 +351,7 @@ class TagsDialog(_SettingDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Tags'):
         __ = title
         self._title = _('Tags')
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -364,7 +367,7 @@ class _FixtureDialog(_SettingDialog):
         else:
             self._title = ''
         self._title_nt = title_nt
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _get_editors(self, item):
         return [ContentAssistEditor(self, item.value)]
@@ -381,7 +384,7 @@ class SuiteSetupDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=SUITE_SETUP):
         __ = title
         self._title = _(SUITE_SETUP)
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -394,7 +397,7 @@ class SuiteTeardownDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=SUITE_TEAR):
         __ = title
         self._title = _(SUITE_TEAR)
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -408,7 +411,7 @@ class TestSetupDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_SETUP):
         __ = title
         self._title = _(TEST_SETUP)
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -422,7 +425,7 @@ class TestTeardownDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_TEAR):
         __ = title
         self._title = _(TEST_TEAR)
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -436,7 +439,7 @@ class SetupDialog(_FixtureDialog):
         __ = title
         self._title = _('Setup')
         # print(f"DEBUG: editordialogs.py SetupDialog ENTER item={item}")
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -450,7 +453,7 @@ class TeardownDialog(_FixtureDialog):
         __ = title
         self._title = _('Teardown')
         # print(f"DEBUG: editordialogs.py TeardownDialog ENTER item={item}")
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -463,7 +466,7 @@ class TemplateDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Template'):
         __ = title
         self._title = _('Template')
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -477,7 +480,7 @@ class TestTemplateDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_TEMPL):
         __ = title
         self._title = _(TEST_TEMPL)
-        _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -490,7 +493,7 @@ class ArgumentsDialog(_SettingDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Arguments'):
         __ = title
         self._title = _('Arguments')
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _get_editors(self, item):
         return [ArgumentEditor(self, item.value, _('Arguments'), ArgumentsValidator())]
@@ -506,7 +509,7 @@ class ReturnValueDialog(_SettingDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt=RET_VAL):
         __ = title
         self._title = _(RET_VAL)
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -524,7 +527,7 @@ class TestTimeoutDialog(_SettingDialog):
         else:
             self._title = _('Test Timeout')
         self._title_nt = title_nt
-        _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -537,7 +540,7 @@ class TimeoutDialog(TestTimeoutDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Timeout'):
         __ = title
         self._title = _('Timeout')
-        TestTimeoutDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
         """ Just ignore it """
@@ -550,7 +553,7 @@ class MetadataDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('Metadata')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _get_editors(self, item):
         name, value = item and (item.name, item.value) or ('', '')
@@ -569,7 +572,7 @@ class TestCaseNameDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('New Test Case')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _add_comment_editor(self, item):
         """ Just ignore it """
@@ -594,7 +597,7 @@ class CopyUserKeywordDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('Copy User Keyword')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _add_comment_editor(self, item):
         """ Just ignore it """
@@ -623,7 +626,7 @@ class UserKeywordNameDialog(_Dialog):
     def __init__(self, controller, item=None, plugin=None, title=None):
         __ = title
         self._title = _('New User Keyword')
-        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+        super().__init__(controller, item=item, plugin=plugin, title=self._title)
 
     def _add_comment_editor(self, item):
         """ Just ignore it """
